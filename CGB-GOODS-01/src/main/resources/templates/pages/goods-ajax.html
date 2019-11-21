@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>Goods Ajax Pages</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>remark</th>
+				<th>createTime</th>
+				<th>没得</th>
+			</tr>
+		</thead>
+		<tbody id="tbodyId">
+			<tr>
+				<td colspan="5">data loading ...</td>
+			</tr>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		function ajaxGet(url,callback) {
+			//页面加载完成向服务器再次发起请求，获取服务端数据，然后更新页面
+			//1.构建xhr对象并注册监听
+			var xhr = new XMLHttpRequest();
+			//注册监听函数（监听与服务端通讯过程）
+			xhr.onreadystatechange = function() {
+				//readyState=4表示通讯结束
+				//status=200表示服务端响应OK
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					//responseText表示服务端响应的结果
+					//console.log(xhr.responseText);输出
+					var result = JSON.parse(xhr.responseText);
+					callback(result);
+				}
+			}
+			//2.建立连接
+			var url = "doFindObjects"
+			xhr.open("GET", url, true);//true代表异步
+			//3.发送请求
+			xhr.send(null);//get请求send方法内部不传参数
+		}
+
+		function doHandleResponseResult(result) {
+			console.log(result);
+			//获得tbody对象，清空原有内容
+			var tBody = document.getElementById("tbodId");
+			tBody.innerHTML="";
+			//迭代result记录，并将记录呈现在tbody位置
+			for (var i = 0; i < result.length; i++) {
+				//构建tr对象
+				var tr = document.createElement("tr");
+				//构建td对象，并追加到tr中
+				doCreatedTds(tr,results[i]);
+				//将tr对象追加到tbody中
+				tBody.appendChild(tr);
+			}
+		}
+		function doCreatdTds(tr,row){
+			var td = document.createElement("td");
+			td.innerText = row.id;
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.innerText = row.name;
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.innerText = row.rematrk;
+			tr.appendChild(td);
+			
+
+			td = document.createElement("td");
+			td.innerText = row.createdTime;
+			tr.appendChild(td);
+		}
+		ajaxGet();
+	</script>
+</body>
+</html>
